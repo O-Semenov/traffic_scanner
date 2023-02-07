@@ -1,8 +1,3 @@
-# -*- encoding: utf-8 -*-
-"""
-Copyright (c) 2019 - present AppSeed.us
-"""
-
 import os, environ
 
 env = environ.Env(
@@ -23,6 +18,8 @@ SECRET_KEY = env('SECRET_KEY', default='S#perS3crEt_007')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
+READY_FILES_URL = "/ready_files/"
+READY_FILES_ROOT = os.path.join(BASE_DIR, 'ready_files')
 FILES_URL = "/files/"
 FILES_ROOT = os.path.join(BASE_DIR, 'files')
 
@@ -42,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.home'  # Enable the inner home (home)
+    'apps.home',  # Enable the inner home (home)
+    'django_tables2'
 ]
 
 MIDDLEWARE = [
@@ -73,6 +71,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'apps.context_processors.cfg_assets_root',
+                'django.template.context_processors.request'
             ],
         },
     },
