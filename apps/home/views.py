@@ -9,7 +9,7 @@ from django_tables2 import SingleTableView
 from django.views.generic import ListView
 from .models import Scan
 from .tables import ScanTable
-
+from pprint import pprint
 
 @login_required(login_url="/login/")
 def index(request):
@@ -53,19 +53,21 @@ def scaning(request):
             scan = form.save(commit=False)
             scan.user = request.user
             scan.save()
-            return HttpResponseRedirect("")
+            return HttpResponseRedirect("/tables")
     else:
         form = ScanForm
     return render(request, 'home/scaning.html', {'form': form, 'segment': 'scaning'})
 
 
 class ScanListView(SingleTableView):
-    model = Scan.objects
     table_class = ScanTable
     template_name = 'home/tables.html'
 
+    def get(self, request):
+        self.queryset = Scan.objects.filter(user=request.user)
+        return super().get(request)
+
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['segment'] = 'tables'
         return context
