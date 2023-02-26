@@ -3,13 +3,15 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
+
+from core.settings import BASE_DIR, READY_FILES_ROOT
 from .forms import ScanForm
 from django.shortcuts import render
 from django_tables2 import SingleTableView
-from django.views.generic import ListView
 from .models import Scan
 from .tables import ScanTable
-from pprint import pprint
+from apps.algo.classification import Classification
+import os
 
 
 @login_required(login_url="/login/")
@@ -75,6 +77,16 @@ class ScanListView(SingleTableView):
 
 
 def deleteItem(request, scanId):
-    Scan.objects.filter(id=scanId).delete()
+    row = Scan.objects.filter(id=scanId)
+    os.remove(BASE_DIR + '/' + str(row[0].path_file))
+    os.remove(READY_FILES_ROOT + '/' + str(row[0].path_result))
+    row.delete()
+    return HttpResponseRedirect("/tables")
 
+
+def classificationItem(request, scanId):
+    row = Scan.objects.filter(id=scanId)
+    action = Classification(row[0].path_file)
+    file = action.scan()
+    Scan.objects.filter(id=scanId).update(status=1, path_result=file)
     return HttpResponseRedirect("/tables")

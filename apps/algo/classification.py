@@ -4,7 +4,7 @@ import time
 from sklearn import *
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
-from core.settings import READY_FILES_ROOT
+from core.settings import READY_FILES_ROOT, BASE_DIR
 
 
 def score(train, test):
@@ -56,8 +56,11 @@ def use_class(user_id, path_file):
 
 class Classification:
 
-    def __init__(self, user_id, path_file):
-        self.path = path_file
-        self.user = user_id
-        streamer = NFStreamer(source="path_file").to_pandas()
-        streamer.to_csv(READY_FILES_ROOT + str(int(time.time())) + '.csv')
+    def __init__(self, path_file):
+        self.streamer = NFStreamer(source=BASE_DIR + '/' + str(path_file)).to_pandas()
+
+    def scan(self):
+        name = str(int(time.time())) + '.csv'
+        self.streamer.to_csv(READY_FILES_ROOT + '/' + name)
+
+        return name

@@ -4,8 +4,7 @@ from django_tables2 import TemplateColumn
 
 class ScanTable(tables.Table):
     style = {"th": {"class": "text-center text-uppercase"},
-             "td": {"class": "text-center text-secondary font-weight-bolder opacity-7"}}
-    id = tables.Column(attrs=style, exclude_from_export=True)
+             "td": {"class": "text-center text-secondary font-weight-bolder opacity-7", 'data-href': '/index.html'}}
     counter = tables.Column(verbose_name='#', empty_values=(), orderable=False, attrs=style)
     path_file = tables.Column(verbose_name='File name', attrs=style)
     created_at = tables.Column(verbose_name='Date', attrs=style)

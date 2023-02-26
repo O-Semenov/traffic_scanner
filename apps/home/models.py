@@ -9,6 +9,7 @@ class Scan(models.Model):
     path_result = models.FileField(upload_to='ready_files/', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+    status = models.IntegerField(default=0)
 
     def __str__(self):
         return self.id
