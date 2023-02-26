@@ -11,6 +11,7 @@ from .models import Scan
 from .tables import ScanTable
 from pprint import pprint
 
+
 @login_required(login_url="/login/")
 def index(request):
     context = {'segment': 'index'}
@@ -71,3 +72,9 @@ class ScanListView(SingleTableView):
         context = super().get_context_data(**kwargs)
         context['segment'] = 'tables'
         return context
+
+
+def deleteItem(request, scanId):
+    Scan.objects.filter(id=scanId).delete()
+
+    return HttpResponseRedirect("/tables")

@@ -7,5 +7,5 @@ class ScanForm(forms.ModelForm):
         model = Scan
         fields = ['path_file']
         widgets = {
-            'path_file': forms.FileInput(attrs={'class' : 'form-control'}),
+            'path_file': forms.FileInput(attrs={'class': 'form-control', 'accept': '.pcap'}),
         }
