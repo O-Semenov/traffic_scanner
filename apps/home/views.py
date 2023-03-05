@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django_tables2 import SingleTableView
 from .models import Scan
 from .tables import ScanTable
-from apps.algo.classification import Classification
+from apps.algo.scanning import Scanning
 import os
 
 
@@ -67,7 +67,8 @@ class ScanListView(SingleTableView):
     template_name = 'home/tables.html'
 
     def get(self, request):
-        self.queryset = Scan.objects.filter(user=request.user)
+        scan = Scan()
+        self.queryset = scan.getByUser(request.user)
         return super().get(request)
 
     def get_context_data(self, **kwargs):
@@ -77,16 +78,31 @@ class ScanListView(SingleTableView):
 
 
 def deleteItem(request, scanId):
-    row = Scan.objects.filter(id=scanId)
-    os.remove(BASE_DIR + '/' + str(row[0].path_file))
+    scan = Scan()
+    row = scan.getById(scanId)
     os.remove(READY_FILES_ROOT + '/' + str(row[0].path_result))
     row.delete()
     return HttpResponseRedirect("/tables")
 
 
-def classificationItem(request, scanId):
-    row = Scan.objects.filter(id=scanId)
-    action = Classification(row[0].path_file)
+def scanItem(request, scanId):
+    scan = Scan()
+    row = scan.getById(scanId)
+    action = Scanning(row[0].path_file)
     file = action.scan()
-    Scan.objects.filter(id=scanId).update(status=1, path_result=file)
+    scan.updateScan(scanId, 1, 'scanning', file)
     return HttpResponseRedirect("/tables")
+
+
+@login_required(login_url="/login/")
+def dashboard(request):
+    if request.method == 'POST':
+        form = ScanForm(request.POST, request.FILES)
+        if form.is_valid():
+            scan = form.save(commit=False)
+            scan.user = request.user
+            scan.save()
+            return HttpResponseRedirect("/tables")
+    else:
+        form = ScanForm
+    return render(request, 'home/scaning.html', {'form': form, 'segment': 'dashboard'})

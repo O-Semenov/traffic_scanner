@@ -1,2 +1,5 @@
-<a href="{% url 'classificationItem' record.id%}" class="btn btn-success">Scan</a>
+{% if record.status == 0 %}
+<a href="{% url 'scanItem' record.id%}" class="btn btn-success">Scan</a>
+{% else %}
 <a href="{% url 'deleteItem' record.id%}" class="btn btn-danger">Delete</a>
+{% endif %}

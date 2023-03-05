@@ -10,6 +10,15 @@ class Scan(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     status = models.IntegerField(default=0)
+    request = models.CharField(max_length=15, default='-')
 
+    def getById(self, scanId):
+        return Scan.objects.filter(id=scanId)
+
+    def getByUser(self, userId):
+        return Scan.objects.filter(user=userId)
+
+    def updateScan(self, scanId, status=0, request='', file=''):
+        Scan.objects.filter(id=scanId).update(status=status, path_result=file, request=request)
     def __str__(self):
         return self.id

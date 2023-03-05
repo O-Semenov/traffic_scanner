@@ -19,6 +19,12 @@ class ScanTable(tables.Table):
         counter = index + 1
         return counter
 
+    def render_status(self, value):
+        if value == 0:
+            return '-'
+        else:
+            return 'OK'
+
     def render_path_file(self, value):
         value = str(value)
         return value[value.find('/') + 1:]
