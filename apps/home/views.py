@@ -15,12 +15,16 @@ import os
 
 @login_required(login_url="/login/")
 def index(request):
-    labels = ['sdac', 'asdcas', 'sdacasdc']
-    values = [1, 2, 3]
+    scan = Scan()
+    row = scan.getLastActive(request.user)
+    scanning = Scanning()
+    values = scanning.getOutputData(row[0].path_result)
+   # sorted_value = values.reshape()
     context = {
         'segment': 'index',
-        'labels': labels,
-        'values': values
+        'labels': values[0],
+        'values': values[1],
+      #  'sorted': sorted_value
     }
     return render(request, 'home/index.html', context)
 
@@ -88,7 +92,7 @@ def deleteItem(request, scanId):
 def scanItem(request, scanId):
     scan = Scan()
     row = scan.getById(scanId)
-    action = Scanning(row[0].path_file)
+    action = Scanning().setData(row[0].path_file)
     file = action.scan()
     scan.updateScan(scanId, 1, 'scanning', file)
     return HttpResponseRedirect("/tables")

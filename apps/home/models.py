@@ -18,6 +18,9 @@ class Scan(models.Model):
     def getByUser(self, userId):
         return Scan.objects.filter(user=userId)
 
+    def getLastActive(self, userId):
+        return Scan.objects.filter(user=userId, status=1)
+
     def updateScan(self, scanId, status=0, request='', file=''):
         Scan.objects.filter(id=scanId).update(status=status, path_result=file, request=request)
     def __str__(self):
