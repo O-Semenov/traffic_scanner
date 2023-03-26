@@ -13,13 +13,14 @@ class Scan(models.Model):
     request = models.CharField(max_length=15, default='-')
 
     def getById(self, scanId):
-        return Scan.objects.filter(id=scanId)
+        return Scan.objects.filter(id=scanId)[0]
 
     def getByUser(self, userId):
         return Scan.objects.filter(user=userId)
 
     def getLastActive(self, userId):
-        return Scan.objects.filter(user=userId, status=1)
+        arr = Scan.objects.filter(user=userId, status=1)
+        return arr[len(arr) - 1]
 
     def updateScan(self, scanId, status=0, request='', file=''):
         Scan.objects.filter(id=scanId).update(status=status, path_result=file, request=request)

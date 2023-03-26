@@ -4,14 +4,16 @@ from django_tables2 import TemplateColumn
 
 class ScanTable(tables.Table):
     style = {"th": {"class": "text-center text-uppercase"},
-             "td": {"class": "text-center text-secondary font-weight-bolder opacity-7", 'data-href': '/index.html'}}
-    counter = tables.Column(verbose_name='#', empty_values=(), orderable=False, attrs=style)
-    path_file = tables.Column(verbose_name='File name', attrs=style)
+             "td": {"class": "text-center text-secondary font-weight-bolder opacity-7"},
+             "tr": {'class': 'clickable-row', 'data-href': '/index.html'}}
+    counter = tables.Column(verbose_name='№', empty_values=(), orderable=False, attrs=style)
+    # path_file = tables.Column(verbose_name='File name', attrs=style)
+    path_file = TemplateColumn(verbose_name='File name', attrs=style, template_name='includes/link-template.html')
     created_at = tables.Column(verbose_name='Date', attrs=style)
     request = tables.Column(attrs=style)
     status = tables.Column(attrs=style)
     action = TemplateColumn(attrs=style,
-                            template_name='includes/button_template.html')
+                            template_name='includes/button-template.html')
 
     def render_counter(self, record):
         records = list(self.data)
@@ -24,10 +26,6 @@ class ScanTable(tables.Table):
             return '-'
         else:
             return 'OK'
-
-    def render_path_file(self, value):
-        value = str(value)
-        return value[value.find('/') + 1:]
 
     class Meta:
         attrs = {"class": "table align-items-center mb-0"}

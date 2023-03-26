@@ -5,12 +5,12 @@ from apps.home.views import ScanListView
 urlpatterns = [
 
     # The home page
-    path('', views.index, name='home'),
     path('scaning', views.scaning, name='scaning'),
     path('tables/deleteItem/<int:scanId>', views.deleteItem, name='deleteItem'),
     path('tables/scanItem/<int:scanId>', views.scanItem, name='scanItem'),
     path('tables', ScanListView.as_view()),
-    # Matches any html file
+
+    re_path(r'^(?P<scan_id>[0-9]+)*', views.index, name='home'),
     re_path(r'^.*\.*', views.pages, name='pages'),
 
 ]

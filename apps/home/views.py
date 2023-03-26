@@ -15,14 +15,17 @@ import os
 
 
 @login_required(login_url="/login/")
-def index(request):
+def index(request, scan_id=None):
+    print(scan_id)
     scan = Scan()
-    row = scan.getLastActive(request.user)
-
+    if scan_id:
+        row = scan.getById(scan_id)
+    else:
+        row = scan.getLastActive(request.user)
     scanning = Scanning()
-    values = scanning.getOutputData(row[0].path_result)
+    values = scanning.getOutputData(row.path_result)
     sorted_values = np.column_stack(values)
-    time_count = scanning.getTime(row[0].path_result)
+    time_count = scanning.getTime(row.path_result)
 
     context = {
         'segment': 'index',
@@ -91,7 +94,7 @@ class ScanListView(SingleTableView):
 def deleteItem(request, scanId):
     scan = Scan()
     row = scan.getById(scanId)
-    os.remove(READY_FILES_ROOT + '/' + str(row[0].path_result))
+    os.remove(READY_FILES_ROOT + '/' + str(row.path_result))
     row.delete()
     return HttpResponseRedirect("/tables")
 
@@ -100,8 +103,8 @@ def scanItem(request, scanId):
     scan = Scan()
     row = scan.getById(scanId)
     action = Scanning()
-    file = action.scan(row[0].path_file)
-    os.remove(BASE_DIR + '/' + str(row[0].path_file))
+    file = action.scan(row.path_file)
+    os.remove(BASE_DIR + '/' + str(row.path_file))
     scan.updateScan(scanId, 1, 'scanning', file)
     return HttpResponseRedirect("/tables")
 

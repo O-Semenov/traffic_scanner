@@ -1,0 +1,6 @@
+.*
+!.gitignore
+apps/algo/main_test.pcap
+files/*
+ready_files/*
+db.sqlite3
