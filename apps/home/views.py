@@ -1,3 +1,4 @@
+import numpy as np
 from django import template
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
@@ -17,14 +18,20 @@ import os
 def index(request):
     scan = Scan()
     row = scan.getLastActive(request.user)
+
     scanning = Scanning()
     values = scanning.getOutputData(row[0].path_result)
-   # sorted_value = values.reshape()
+    sorted_values = np.column_stack(values)
+    time_count = scanning.getTime(row[0].path_result)
+
     context = {
         'segment': 'index',
         'labels': values[0],
         'values': values[1],
-      #  'sorted': sorted_value
+        'sorted': sorted_values[sorted_values[:, 1].argsort()[::-1]][:3],
+        'sum_count_query': np.sum(values[1]),
+        'time_labels': time_count[0],
+        'time_values': time_count[1],
     }
     return render(request, 'home/index.html', context)
 
@@ -92,8 +99,9 @@ def deleteItem(request, scanId):
 def scanItem(request, scanId):
     scan = Scan()
     row = scan.getById(scanId)
-    action = Scanning().setData(row[0].path_file)
-    file = action.scan()
+    action = Scanning()
+    file = action.scan(row[0].path_file)
+    os.remove(BASE_DIR + '/' + str(row[0].path_file))
     scan.updateScan(scanId, 1, 'scanning', file)
     return HttpResponseRedirect("/tables")
 
