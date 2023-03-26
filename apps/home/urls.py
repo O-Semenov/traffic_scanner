@@ -5,7 +5,7 @@ from apps.home.views import ScanListView
 urlpatterns = [
 
     # The home page
-    path('scaning', views.scaning, name='scaning'),
+    path('scanning', views.scanning, name='scanning'),
     path('profile', views.profile, name='profile'),
     path('tables/deleteItem/<int:scanId>', views.deleteItem, name='deleteItem'),
     path('tables/scanItem/<int:scanId>', views.scanItem, name='scanItem'),

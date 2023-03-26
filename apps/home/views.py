@@ -63,7 +63,7 @@ def pages(request):
 
 
 @login_required(login_url="/login/")
-def scaning(request):
+def scanning(request):
     if request.method == 'POST':
         form = ScanForm(request.POST, request.FILES)
         if form.is_valid():
@@ -73,7 +73,7 @@ def scaning(request):
             return HttpResponseRedirect("/tables")
     else:
         form = ScanForm
-    return render(request, 'home/scaning.html', {'form': form, 'segment': 'scaning'})
+    return render(request, 'home/scanning.html', {'form': form, 'segment': 'scanning'})
 
 
 class ScanListView(SingleTableView):
