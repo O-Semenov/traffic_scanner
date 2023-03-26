@@ -18,6 +18,9 @@ class Scan(models.Model):
     def getByUser(self, userId):
         return Scan.objects.filter(user=userId)
 
+    def checkCount(self, userId):
+        return len(Scan.objects.filter(user=userId))
+
     def getLastActive(self, userId):
         arr = Scan.objects.filter(user=userId, status=1)
         return arr[len(arr) - 1]

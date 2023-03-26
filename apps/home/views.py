@@ -16,12 +16,13 @@ import os
 
 @login_required(login_url="/login/")
 def index(request, scan_id=None):
-    print(scan_id)
     scan = Scan()
     if scan_id:
         row = scan.getById(scan_id)
-    else:
+    elif scan.checkCount(request.user):
         row = scan.getLastActive(request.user)
+    else:
+        return render(request, 'home/scanning.html', {'segment': 'scanning'})
     scanning = Scanning()
     values = scanning.getOutputData(row.path_result)
     sorted_values = np.column_stack(values)
