@@ -22,9 +22,9 @@ class Scanning:
     def getOutputData(self, path_result):
         result = []
         file = pd.read_csv(READY_FILES_ROOT + '/' + str(path_result))
-        application_names = file['application_name'].unique()
+        application_names = file['application_category_name'].unique()
         for i in application_names:
-            result.append(file.query(f'application_name == "{i}"').shape[0])
+            result.append(file.query(f'application_category_name == "{i}"').shape[0])
         return [application_names, result]
 
     def getTime(self, path_result):

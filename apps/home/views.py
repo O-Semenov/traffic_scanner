@@ -90,7 +90,7 @@ class ScanListView(SingleTableView):
         context['segment'] = 'tables'
         return context
 
-
+@login_required(login_url="/login/")
 def deleteItem(request, scanId):
     scan = Scan()
     row = scan.getById(scanId)
@@ -98,7 +98,7 @@ def deleteItem(request, scanId):
     row.delete()
     return HttpResponseRedirect("/tables")
 
-
+@login_required(login_url="/login/")
 def scanItem(request, scanId):
     scan = Scan()
     row = scan.getById(scanId)
@@ -110,14 +110,6 @@ def scanItem(request, scanId):
 
 
 @login_required(login_url="/login/")
-def dashboard(request):
-    if request.method == 'POST':
-        form = ScanForm(request.POST, request.FILES)
-        if form.is_valid():
-            scan = form.save(commit=False)
-            scan.user = request.user
-            scan.save()
-            return HttpResponseRedirect("/tables")
-    else:
-        form = ScanForm
-    return render(request, 'home/scaning.html', {'form': form, 'segment': 'dashboard'})
+def profile(request):
+
+    return render(request, 'home/profile.html', {'segment': 'profile'})
