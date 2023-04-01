@@ -1,6 +1,7 @@
 import numpy as np
 from django import template
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
@@ -11,6 +12,7 @@ from django_tables2 import SingleTableView
 from .models import Scan
 from .tables import ScanTable
 from apps.algo.scanning import Scanning
+from apps.authentication.forms import ChangeUserPassForm
 import os
 
 
@@ -91,6 +93,7 @@ class ScanListView(SingleTableView):
         context['segment'] = 'tables'
         return context
 
+
 @login_required(login_url="/login/")
 def deleteItem(request, scanId):
     scan = Scan()
@@ -98,6 +101,7 @@ def deleteItem(request, scanId):
     os.remove(READY_FILES_ROOT + '/' + str(row.path_result))
     row.delete()
     return HttpResponseRedirect("/tables")
+
 
 @login_required(login_url="/login/")
 def scanItem(request, scanId):
@@ -112,5 +116,18 @@ def scanItem(request, scanId):
 
 @login_required(login_url="/login/")
 def profile(request):
+    msg = None
+    success = None
 
-    return render(request, 'home/profile.html', {'segment': 'profile'})
+    if request.method == "POST":
+        form = ChangeUserPassForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            msg = 'Change password successfully.'
+            success = True
+        else:
+            msg = 'Error.'
+    else:
+        form = ChangeUserPassForm(request.user)
+
+    return render(request, 'home/profile.html', {'segment': 'profile', 'form': form, 'msg': msg, 'success': success})
