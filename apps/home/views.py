@@ -29,15 +29,17 @@ def index(request, scan_id=None):
     values = scanning.getOutputData(row.path_result)
     sorted_values = np.column_stack(values)
     time_count = scanning.getTime(row.path_result)
-
+    table_body = scanning.getTable(row.path_result)
     context = {
         'segment': 'index',
         'labels': values[0],
         'values': values[1],
         'sorted': sorted_values[sorted_values[:, 1].argsort()[::-1]][:3],
         'sum_count_query': np.sum(values[1]),
-        'time_labels': time_count[0],
-        'time_values': time_count[1],
+        'time_labels': time_count.index,
+        'time_values': time_count.values,
+        'weight_values': scanning.getWeight(row.path_result),
+        'table_body': table_body
     }
     return render(request, 'home/index.html', context)
 
