@@ -29,3 +29,6 @@ class Scan(models.Model):
         Scan.objects.filter(id=scanId).update(status=status, path_result=file, request=request)
     def __str__(self):
         return self.id
+
+    class Meta:
+        ordering = ['-id']

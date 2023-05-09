@@ -48,11 +48,10 @@ class Scanning:
 
     def getTable(self, path_result):
         need = ['src_ip', 'src_mac',
-       'src_port', 'dst_ip', 'dst_mac', 'dst_port', 'protocol',
-       'bidirectional_packets', 'bidirectional_bytes',
-       'application_name', 'application_category_name',
-       'requested_server_name', 'client_fingerprint', 'server_fingerprint']
+                'src_port', 'dst_ip', 'dst_mac', 'dst_port', 'protocol',
+                'bidirectional_packets', 'bidirectional_bytes',
+                'application_name', 'application_category_name',
+                'requested_server_name', 'client_fingerprint', 'server_fingerprint']
         file = pd.read_csv(READY_FILES_ROOT + '/' + str(path_result))
-        print(file[need].to_dict('records'))
 
-        return file[need].replace(pd.np.nan, '-').to_dict('records')
+        return file[need].replace(np.nan, '-').to_dict('records')

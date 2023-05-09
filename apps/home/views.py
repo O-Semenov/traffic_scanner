@@ -1,8 +1,7 @@
 import numpy as np
 from django import template
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, FileResponse
 from django.template import loader
 from django.urls import reverse
 from core.settings import BASE_DIR, READY_FILES_ROOT
@@ -104,6 +103,14 @@ def deleteItem(request, scanId):
     row.delete()
     return HttpResponseRedirect("/tables")
 
+@login_required(login_url="/login/")
+def download(request, scanId):
+    scan = Scan()
+    row = scan.getById(scanId)
+    with open(READY_FILES_ROOT + '/' + str(row.path_result), 'rb') as file:
+        response = HttpResponse(content=file.read(), content_type='application/csv')
+        response['Content-Disposition'] = 'attachment; filename="' + str(row.path_result) + '"'
+        return response
 
 @login_required(login_url="/login/")
 def scanItem(request, scanId):
@@ -120,7 +127,7 @@ def scanItem(request, scanId):
 def profile(request):
     msg = None
     success = None
-
+    scan = Scan()
     if request.method == "POST":
         form = ChangeUserPassForm(request.user, request.POST)
         if form.is_valid():
@@ -132,4 +139,10 @@ def profile(request):
     else:
         form = ChangeUserPassForm(request.user)
 
-    return render(request, 'home/profile.html', {'segment': 'profile', 'form': form, 'msg': msg, 'success': success})
+    return render(request, 'home/profile.html', {
+        'segment': 'profile',
+        'form': form,
+        'msg': msg,
+        'success': success,
+        'count_files': scan.getByUser(request.user).count()
+    })
