@@ -85,6 +85,7 @@
                 <thead>
                     <tr>
                         <th>Src IP</th>
+                        <th>  Time  </th>
                         <th>Src MAC</th>
                         <th>Src Port</th>
                         <th>Dst IP</th>
@@ -104,6 +105,7 @@
                    {% for row in table_body %}
                         <tr>
                             <td>{{ row.src_ip }}</td>
+                            <td>{{ row.bidirectional_first_seen_ms|date:"N d G:i:s" }}</td>
                             <td>{{ row.src_mac }}</td>
                             <td>{{ row.src_port }}</td>
                             <td>{{ row.dst_ip }}</td>

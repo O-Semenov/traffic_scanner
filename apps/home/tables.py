@@ -7,7 +7,6 @@ class ScanTable(tables.Table):
              "td": {"class": "text-center text-secondary font-weight-bolder opacity-7"},
              "tr": {'class': 'clickable-row', 'data-href': '/index.html'}}
     counter = tables.Column(verbose_name='№', empty_values=(), orderable=False, attrs=style)
-    # path_file = tables.Column(verbose_name='File name', attrs=style)
     path_file = TemplateColumn(verbose_name='File name', attrs=style, template_name='includes/link-template.html')
     created_at = tables.Column(verbose_name='Date', attrs=style)
     request = tables.Column(attrs=style)

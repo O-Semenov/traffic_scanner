@@ -1,1 +1,5 @@
-<a href="{% url 'home' scan_id=record.id %}" class="row-link">{{ record.path_file }}</a>
+{% if record.status %}
+    <a href="{% url 'home' scan_id=record.id %}" class="row-link">{{ record.path_file | cut:'files/' }}</a>
+{% else %}
+    {{ record.path_file | cut:'files/' }}
+{% endif %}
